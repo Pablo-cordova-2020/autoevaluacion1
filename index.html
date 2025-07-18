@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario - Indiana Jones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif', serif;
+            background: #1c0c08;
+            color: #e0d0a8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="%23c19d56" /><path d="M20,20 Q50,5 80,20 T100,50 Q85,80 50,100 T0,50 Q15,20 50,0 T100,50" fill="%238a5d2e" /></svg>');
+        }
+        
+        .journal-container {
+            position: relative;
+            background: #e6d3a3;
+            border: 15px solid #8a5d2e;
+            border-radius: 5px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 
+                0 0 30px rgba(0, 0, 0, 0.8),
+                inset 0 0 20px rgba(139, 69, 19, 0.5);
+            z-index: 10;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L100,100 M100,0 L0,100" stroke="%238a5d2e" stroke-width="1"/></svg>');
+        }
+        
+        .journal-container::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+        
+        .journal-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            border-bottom: 3px double #8a5d2e;
+            padding-bottom: 20px;
+        }
+        
+        .journal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: #8a5d2e;
+            text-shadow: 3px 3px 0 #1c0c08;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            position: relative;
+        }
+        
+        .journal-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #1c0c08;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .stamp {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            border: 3px dashed #8a5d2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(193, 157, 86, 0.3);
+            transform: rotate(15deg);
+        }
+        
+        .stamp-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: #8a5d2e;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            transform: rotate(-15deg);
+        }
+        
+        .explorer-input {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .explorer-input label {
+            display: block;
+            font-size: 1.1rem;
+            color: #8a5d2e;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .explorer-input input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(193, 157, 86, 0.3);
+            border: 2px solid #8a5d2e;
+            border-radius: 3px;
+            color: #1c0c08;
+            font-family: 'Noto Serif', serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .explorer-input input:focus {
+            outline: none;
+            border-color: #1c0c08;
+            box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
+            background: rgba(193, 157, 86, 0.5);
+        }
+        
+        .map-progress {
+            height: 25px;
+            background: rgba(193, 157, 86, 0.3);
+            border: 2px solid #8a5d2e;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(139, 69, 19, 0.5);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8a5d2e, #c19d56);
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
+            animation: progressShine 2s infinite linear;
+        }
+        
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1c0c08;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .expedition-question {
+            margin-bottom: 25px;
+            background: rgba(193, 157, 86, 0.2);
+            padding: 20px;
+            border: 2px solid #8a5d2e;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 3px 5px rgba(139, 69, 19, 0.2);
+        }
+        
+        .expedition-question.correct {
+            border-color: #4a7a3a;
+            box-shadow: 0 0 10px rgba(74, 122, 58, 0.3);
+        }
+        
+        .expedition-question.incorrect {
+            border-color: #a52a2a;
+            box-shadow: 0 0 10px rgba(165, 42, 42, 0.3);
+        }
+        
+        .question-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #8a5d2e;
+            color: #e6d3a3;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-bottom-right-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin: 30px 0 20px 0;
+            color: #1c0c08;
+            line-height: 1.6;
+            font-weight: bold;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            background: rgba(193, 157, 86, 0.4);
+            padding: 12px 15px;
+            border: 2px solid #8a5d2e;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            background: rgba(139, 69, 19, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background: rgba(139, 69, 19, 0.3);
+            border-color: #1c0c08;
+            box-shadow: 0 0 10px rgba(139, 69, 19, 0.3);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            appearance: none;
+            border: 2px solid #8a5d2e;
+            background: transparent;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .option input[type="radio"]:checked::before {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            background: #8a5d2e;
+            border-radius: 50%;
+        }
+        
+        .option-label {
+            font-size: 1rem;
+            color: #1c0c08;
+        }
+        
+        .question-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-left: 4px solid #8a5d2e;
+            background: rgba(193, 157, 86, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-feedback.visible {
+            display: block;
+        }
+        
+        .feedback-correct {
+            background: rgba(74, 122, 58, 0.2);
+            color: #2a4a1a;
+            border-left-color: #4a7a3a;
+        }
+        
+        .feedback-incorrect {
+            background: rgba(165, 42, 42, 0.2);
+            color: #7a1a1a;
+            border-left-color: #a52a2a;
+        }
+        
+        .expedition-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .expedition-button {
+            background: linear-gradient(45deg, #8a5d2e, #c19d56);
+            color: #1c0c08;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #1c0c08;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 10px rgba(139, 69, 19, 0.5);
+        }
+        
+        .expedition-button:hover {
+            background: linear-gradient(45deg, #c19d56, #e6d3a3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.7);
+        }
+        
+        .expedition-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 7px rgba(139, 69, 19, 0.5);
+        }
+        
+        .expedition-button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #777;
+        }
+        
+        #downloadPDF {
+            background: linear-gradient(45deg, #4a7a3a, #6a9a5a);
+            color: #e6d3a3;
+        }
+        
+        #expedition-result {
+            margin-top: 30px;
+            background: rgba(193, 157, 86, 0.3);
+            padding: 25px;
+            border: 2px solid #8a5d2e;
+            border-radius: 3px;
+            font-size: 1.2rem;
+            color: #1c0c08;
+            text-align: center;
+            display: none;
+            position: relative;
+        }
+        
+        #expedition-result p {
+            margin-bottom: 15px;
+        }
+        
+        .artifact {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            z-index: 5;
+            bottom: 20px;
+            animation: float 3s infinite ease-in-out;
+            opacity: 0.7;
+        }
+        
+        .artifact.left {
+            left: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23c19d56" stroke="%238a5d2e" stroke-width="3"/><circle cx="50" cy="50" r="25" fill="%238a5d2e" stroke="%231c0c08" stroke-width="2"/></svg>') no-repeat;
+        }
+        
+        .artifact.right {
+            right: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="60" rx="5" fill="%238a5d2e" stroke="%231c0c08" stroke-width="2"/><rect x="35" y="25" width="30" height="50" fill="%23c19d56" stroke="%231c0c08" stroke-width="1"/></svg>') no-repeat;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .parchment-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" opacity="0.05"><rect width="400" height="400" fill="%23e6d3a3" /><path d="M50,50 Q200,20 350,50 T400,200 Q380,350 200,400 T0,200 Q20,50 200,0 T400,200" fill="%23c19d56" /></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Controles de audio */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(139, 69, 19, 0.8);
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #1c0c08;
+            z-index: 100;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .audio-controls button {
+            background: transparent;
+            border: none;
+            color: #e6d3a3;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .audio-controls button:hover {
+            background: rgba(193, 157, 86, 0.5);
+        }
+        
+        .audio-controls input[type="range"] {
+            width: 100px;
+            -webkit-appearance: none;
+            height: 6px;
+            background: #8a5d2e;
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .audio-controls input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #c19d56;
+            border: 2px solid #1c0c08;
+            cursor: pointer;
+        }
+        
+        .audio-controls input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #c19d56;
+            border: 2px solid #1c0c08;
+            cursor: pointer;
+        }
+        
+        .audio-info {
+            color: #e6d3a3;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+        }
+        
+        @media (max-width: 768px) {
+            .journal-title {
+                font-size: 2rem;
+            }
+            
+            .journal-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .option-label {
+                font-size: 0.9rem;
+            }
+            
+            .expedition-button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .audio-controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px;
+            }
+            
+            .audio-controls input[type="range"] {
+                width: 80px;
+            }
+            
+            .artifact {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-overlay"></div>
+    <div class="artifact left"></div>
+    <div class="artifact right"></div>
+    
+    <!-- Controles de audio -->
+    <div class="audio-controls">
+        <button id="btnPlayPause">▶️</button>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+        <div class="audio-info">Música de Expedición</div>
+    </div>
+    
+    <div class="journal-container">
+        <div class="journal-header">
+            <h1 class="journal-title">INDIANA JONES</h1>
+            <p class="journal-subtitle">El Cuestionario Perdido</p>
+            <p>UNIDAD 2 - PROGRAMACIÓN PARA RECURSOS EDUCATIVOS</p>
+            <div class="stamp">
+                <div class="stamp-text">Confidencial<br>Máxima<br>Seguridad</div>
+            </div>
+        </div>
+        
+        <div class="explorer-input">
+            <label for="nombreUsuario">NOMBRE DEL EXPLORADOR:</label>
+            <input type="text" id="nombreUsuario" name="nombreUsuario" placeholder="Ingrese su nombre" required />
+        </div>
+
+        <div class="map-progress">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">PROGRESO: 0%</div>
+        </div>
+
+        <!-- Preguntas -->
+        <div class="expedition-question" data-qnum="1">
+            <div class="question-number">ARTEFACTO 01</div>
+            <div class="question-text">¿Qué describe mejor una licencia perpetua?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label">a) Requiere un solo pago y ofrece acceso indefinido al software</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label">b) Requiere pagos mensuales obligatorios</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label">c) Caduca después de un año</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label">d) Permite usar el software solo en línea</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div class="expedition-question" data-qnum="2">
+            <div class="question-number">ARTEFACTO 02</div>
+            <div class="question-text">¿Qué permiten las licencias de código abierto como la GPL a los estudiantes?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label">a) Modificar el código fuente para proyectos educativos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label">b) Usar el software solo en clases presenciales</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label">c) Prohibir su uso fuera del aula</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label">d) Compartir el software sin derechos</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div class="expedition-question" data-qnum="3">
+            <div class="question-number">ARTEFACTO 03</div>
+            <div class="question-text">¿Para qué es ideal una licencia de sitio?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label">a) Para un solo usuario que cambia de dispositivo</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label">b) Para escuelas que necesitan instalar el software en muchas computadoras</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label">c) Para desarrolladores independientes</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label">d) Para licencias mensuales personales</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div class="expedition-question" data-qnum="4">
+            <div class="question-number">ARTEFACTO 04</div>
+            <div class="question-text">¿Qué es falso sobre la licencia MIT?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label">a) Prohíbe el uso comercial del software</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label">b) Exige que los derivados no necesariamente permanezcan como código abierto</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label">c) No permite redistribución</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label">d) Restringe la modificación del código</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div class="expedition-question" data-qnum="5">
+            <div class="question-number">ARTEFACTO 05</div>
+            <div class="question-text">¿Qué ofrece el software con licencia de suscripción como Microsoft 365 Education?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q5" value="a">
+                    <span class="option-label">a) Se usa sin conexión a internet</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q5" value="b">
+                    <span class="option-label">b) No requiere conexión a servidores</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q5" value="c">
+                    <span class="option-label">c) Incluye actualizaciones automáticas</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q5" value="d">
+                    <span class="option-label">d) No permite instalación en múltiples dispositivos</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 6 -->
+        <div class="expedition-question" data-qnum="6">
+            <div class="question-number">ARTEFACTO 06</div>
+            <div class="question-text">¿Qué afirmación sobre las licencias Creative Commons como CC0 es incorrecta?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q6" value="a">
+                    <span class="option-label">a) Son solo para imágenes</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q6" value="b">
+                    <span class="option-label">b) Exigen pagar regalías</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q6" value="c">
+                    <span class="option-label">c) No requieren atribución al autor original</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q6" value="d">
+                    <span class="option-label">d) Se aplican únicamente a software privativo</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 7 -->
+        <div class="expedition-question" data-qnum="7">
+            <div class="question-number">ARTEFACTO 07</div>
+            <div class="question-text">¿Cuál es una limitación de la licencia de usuario designado?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q7" value="a">
+                    <span class="option-label">a) Permite múltiples usuarios al mismo tiempo</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q7" value="b">
+                    <span class="option-label">b) Es ideal para instalaciones escolares masivas</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q7" value="c">
+                    <span class="option-label">c) Se transfiere libremente entre computadoras</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q7" value="d">
+                    <span class="option-label">d) No es flexible para entornos compartidos como laboratorios</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 8 -->
+        <div class="expedition-question" data-qnum="8">
+            <div class="question-number">ARTEFACTO 08</div>
+            <div class="question-text">¿Qué permite el software con licencia LGPL?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q8" value="a">
+                    <span class="option-label">a) Uso exclusivo para proyectos personales</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q8" value="b">
+                    <span class="option-label">b) Distribuirse solo en formato binario</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q8" value="c">
+                    <span class="option-label">c) Ser utilizado solo en sistemas Linux</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q8" value="d">
+                    <span class="option-label">d) Vincularse con aplicaciones propietarias sin liberar todo el código</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 9 -->
+        <div class="expedition-question" data-qnum="9">
+            <div class="question-number">ARTEFACTO 09</div>
+            <div class="question-text">¿Qué limitación tienen las licencias propietarias en contextos educativos?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q9" value="a">
+                    <span class="option-label">a) No permiten personalizar el software para necesidades curriculares</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q9" value="b">
+                    <span class="option-label">b) Se pueden modificar libremente</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q9" value="c">
+                    <span class="option-label">c) Son de código abierto</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q9" value="d">
+                    <span class="option-label">d) Permiten redistribución sin restricciones</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <!-- Pregunta 10 -->
+        <div class="expedition-question" data-qnum="10">
+            <div class="question-number">ARTEFACTO 10</div>
+            <div class="question-text">¿Por qué es útil la licencia Apache en educación?</div>
+            <div class="options-container">
+                <label class="option">
+                    <input type="radio" name="q10" value="a">
+                    <span class="option-label">a) Permite usar software como Apache OpenOffice para enseñar productividad</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q10" value="b">
+                    <span class="option-label">b) Solo es útil para desarrollo web</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q10" value="c">
+                    <span class="option-label">c) No permite modificaciones</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="q10" value="d">
+                    <span class="option-label">d) Se limita a uso en servidores empresariales</span>
+                </label>
+            </div>
+            <div class="question-feedback"></div>
+        </div>
+
+        <div class="expedition-controls">
+            <button class="expedition-button" id="btnPresentar">ENVIAR EXPEDICIÓN</button>
+            <button class="expedition-button" id="downloadPDF">GUARDAR DIARIO</button>
+        </div>
+        
+        <div id="expedition-result"></div>
+    </div>
+
+    <!-- Elemento de audio -->
+    <audio id="backgroundAudio" loop>
+        <source src="audioindjon.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <script>
+        // Respuestas correctas y explicaciones
+        const respuestas = {
+            q1: 'a', q2: 'a', q3: 'b', q4: 'b',
+            q5: 'c', q6: 'c', q7: 'd', q8: 'd',
+            q9: 'a', q10: 'a'
+        };
+        
+        const explicaciones = {
+            q1: '✅ CORRECTO: Las licencias perpetuas requieren un solo pago y ofrecen acceso indefinido al software sin pagos recurrentes.',
+            q2: '✅ CORRECTO: Las licencias de código abierto como GPL permiten a los estudiantes modificar el código fuente para proyectos educativos.',
+            q3: '✅ CORRECTO: Las licencias de sitio son ideales para instituciones como escuelas que necesitan instalar software en múltiples computadoras.',
+            q4: '✅ CORRECTO: La licencia MIT permite uso comercial, redistribución y modificación sin requerir que los derivados sean de código abierto.',
+            q5: '✅ CORRECTO: Las licencias de suscripción como Microsoft 365 Education incluyen actualizaciones automáticas como parte del servicio.',
+            q6: '✅ CORRECTO: CC0 es una licencia Creative Commons que permite uso sin atribución, pero puede aplicarse a cualquier tipo de contenido.',
+            q7: '✅ CORRECTO: Las licencias de usuario designado no son flexibles para entornos compartidos como laboratorios de computación.',
+            q8: '✅ CORRECTO: La licencia LGPL permite vincularse con aplicaciones propietarias sin liberar todo el código fuente.',
+            q9: '✅ CORRECTO: Las licencias propietarias generalmente no permiten personalizar el software para necesidades educativas específicas.',
+            q10: '✅ CORRECTO: La licencia Apache permite usar software educativo como Apache OpenOffice para enseñar habilidades de productividad.',
+            
+            q1a: '❌ INCORRECTO: Las licencias perpetuas ofrecen acceso indefinido sin pagos recurrentes.',
+            q2a: '❌ INCORRECTO: Las licencias de código abierto permiten modificar el código para proyectos educativos.',
+            q3a: '❌ INCORRECTO: Las licencias de sitio están diseñadas para instalaciones en múltiples equipos en una ubicación.',
+            q4a: '❌ INCORRECTO: La licencia MIT permite uso comercial y no restringe la redistribución.',
+            q5a: '❌ INCORRECTO: Las licencias de suscripción incluyen actualizaciones automáticas como parte del servicio.',
+            q6a: '❌ INCORRECTO: Las licencias Creative Commons como CC0 no exigen pagar regalías.',
+            q7a: '❌ INCORRECTO: Las licencias de usuario designado están pensadas para un solo usuario.',
+            q8a: '❌ INCORRECTO: La licencia LGPL permite vincularse con software propietario sin liberar todo el código.',
+            q9a: '❌ INCORRECTO: Las licencias propietarias generalmente no permiten personalización.',
+            q10a: '❌ INCORRECTO: La licencia Apache es útil para varios propósitos educativos, no solo desarrollo web.'
+        };
+        
+        // Variables para control de audio
+        const audio = document.getElementById('backgroundAudio');
+        const volumeControl = document.getElementById('volumeControl');
+        const playPauseButton = document.getElementById('btnPlayPause');
+        
+        // Configuración inicial del audio
+        audio.volume = 0.5; // Volumen moderado
+        
+        // Actualizar la barra de progreso
+        function updateProgress() {
+            let contestadas = 0;
+            for (let i = 1; i <= 10; i++) {
+                if (document.querySelector(`input[name=q${i}]:checked`)) contestadas++;
+            }
+            const pct = Math.round(contestadas / 10 * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = `PROGRESO: ${pct}%`;
+            
+            // Destacar la opción seleccionada
+            document.querySelectorAll('.option').forEach(option => {
+                const radio = option.querySelector('input[type="radio"]');
+                if (radio && radio.checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+        
+        // Calificar el cuestionario y mostrar retroalimentación
+        function calificar() {
+            const nombre = document.getElementById('nombreUsuario').value.trim();
+            if (!nombre) {
+                alert('¡EXPLORADOR, DEBE IDENTIFICARSE ANTES DE ENVIAR LA EXPEDICIÓN!');
+                return;
+            }
+            
+            let score = 0;
+            let allAnswered = true;
+            
+            // Verificar si todas las preguntas están respondidas
+            for (let i = 1; i <= 10; i++) {
+                if (!document.querySelector(`input[name=q${i}]:checked`)) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            if (!allAnswered) {
+                alert('¡EXPLORADOR, DEBE DESCIFRAR TODOS LOS ARTEFACTOS ANTES DE ENVIAR LA EXPEDICIÓN!');
+                return;
+            }
+            
+            // Calificar cada pregunta y mostrar retroalimentación
+            for (let i = 1; i <= 10; i++) {
+                const question = document.querySelector(`.expedition-question[data-qnum="${i}"]`);
+                const feedback = question.querySelector('.question-feedback');
+                const sel = question.querySelector(`input[name=q${i}]:checked`);
+                
+                if (sel) {
+                    const isCorrect = sel.value === respuestas[`q${i}`];
+                    
+                    // Actualizar clase de la pregunta
+                    question.classList.remove('correct', 'incorrect');
+                    question.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    
+                    // Actualizar feedback
+                    feedback.textContent = isCorrect ? 
+                        explicaciones[`q${i}`] : 
+                        explicaciones[`q${i}${sel.value}`] || `Respuesta incorrecta. El secreto correcto es ${respuestas[`q${i}`].toUpperCase()}.`;
+                    
+                    feedback.className = 'question-feedback visible ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+                    
+                    if (isCorrect) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resultEl = document.getElementById('expedition-result');
+            resultEl.style.display = 'block';
+            resultEl.innerHTML = `
+                <p><strong>EXPLORADOR ${nombre.toUpperCase()}</strong></p>
+                <p>ARTEFACTOS DESCIFRADOS: <strong>${score} / 10</strong></p>
+                ${score === 10 ? 
+                  '<p>¡EXPEDICIÓN EXITOSA! HAS ENCONTRADO EL TESORO DEL CONOCIMIENTO 🏆</p>' : 
+                  score >= 7 ? 
+                  '<p>¡BUEN TRABAJO! HAS DESCUBIERTO LA MAYORÍA DE LOS SECRETOS 🗺️</p>' : 
+                  '<p>¡LA EXPEDICIÓN CONTINÚA! NECESITAS EXPLORAR MÁS PROFUNDAMENTE 📜</p>'}
+                <p>ESTE DIARIO SERÁ GUARDADO EN EL ARCHIVO DE LA UNIVERSIDAD.</p>
+            `;
+            
+            document.getElementById('btnPresentar').disabled = true;
+            document.getElementById('downloadPDF').style.display = 'inline-block';
+            
+            // Efecto de sonido al completar
+            const audioComplete = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3');
+            audioComplete.play().catch(e => console.log("Audio playback prevented by browser"));
+        }
+        
+        // Descargar PDF
+        document.getElementById('downloadPDF').addEventListener('click', () => {
+            alert("DIARIO DE EXPEDICIÓN GUARDADO. EL ARCHIVO SE HA AÑADIDO A TU COLECCIÓN.");
+        });
+        
+        // Control de volumen
+        volumeControl.addEventListener('input', () => {
+            audio.volume = volumeControl.value;
+        });
+        
+        // Control de play/pause
+        playPauseButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.textContent = '⏸️';
+            } else {
+                audio.pause();
+                playPauseButton.textContent = '▶️';
+            }
+        });
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('input[type=radio]').forEach(r => {
+                r.addEventListener('change', updateProgress);
+            });
+            
+            document.getElementById('btnPresentar').addEventListener('click', calificar);
+            
+            // Intentar reproducir el audio automáticamente
+            audio.play()
+                .then(() => {
+                    playPauseButton.textContent = '⏸️';
+                })
+                .catch(error => {
+                    console.log("La reproducción automática falló: ", error);
+                    // Mostrar instrucción al usuario
+                    const audioInfo = document.querySelector('.audio-info');
+                    audioInfo.textContent = "Haz clic en ▶️ para iniciar música";
+                    audioInfo.style.color = "#e6d3a3";
+                    audioInfo.style.fontWeight = "bold";
+                });
+        });
+    </script>
+</body>
+</html>
